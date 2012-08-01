@@ -4,12 +4,13 @@
  Arduino Ethernet Weather Station
  Author: Calvin Leung Huang
  Created: 30 Jul 2012
- Last updated: 1 Aug 2012
+ Last updated: 2 Aug 2012
  
  */
 
 #include <SPI.h>
 #include <Ethernet.h>
+#include <LiquidCrystal.h>
 
 byte mac[] = {  
   0x90, 0xA2, 0xDA, 0x0D, 0x83, 0xB0 }; //Make sure to change MAC address to that of your shield
@@ -23,22 +24,34 @@ String value = "";
 
 EthernetClient client;
 
-void setup() {
-  Serial.begin(9600);
+LiquidCrystal lcd(9, 8, 7, 6, 5, 3);
 
-  Serial.println("FF Weather Station");
-  Serial.println("connecting...");
+void setup() {
+  //Serial.begin(9600);
+
+  //Serial.println("FF Weather Station");
+  //Serial.println("connecting...");
+  
+  lcd.begin(16,2);
+  lcd.home();
+  lcd.print("FF Weather Stn");
+  lcd.setCursor(0,1);
+  lcd.print("connecting...");
 
   Ethernet.begin(mac);
   delay(1000);
 
   if (client.connect(server, 80)) {
-    Serial.println("Connected!");
+    lcd.clear();
+    lcd.print("Connected!");
+    //Serial.println("Connected!");
     client.println("GET /ig/api?weather=12180 HTTP/1.1"); //Make http request
     client.println();
   } 
   else {
-    Serial.println("connection failed");
+    lcd.clear();
+    lcd.print("connection failed");
+    //Serial.println("connection failed");
   }
 }
 
@@ -49,11 +62,12 @@ void loop()
   }
 
   if (!client.connected()) {
-    Serial.println();
-    Serial.println("Disconnected");
+    lcd.clear();
+    lcd.print("Disconnected");
+    //Serial.println("Disconnected");
     client.stop();
 
-    // do nothing forevermore:
+    // Do nothing
     for(;;)
       ;
   }
@@ -96,14 +110,21 @@ void parse_info(){
 }
 
 void print_data(){
+  
   if (temp == "city data"){
-    Serial.println("City: " + value);
+    lcd.clear();
+    lcd.print("City: " + value);
+    //Serial.println("City: " + value);
   }
+  /*
   if (temp == "current_date_time data"){
     Serial.println("Last updated: " + value);
   }
+  */
   if (temp == "temp_f data"){
-    Serial.println("Degrees F: " + value);
+    lcd.setCursor(0,1);
+    lcd.print("Degrees F: " + value);
+    //Serial.println("Degrees F: " + value);
   }
   finish_parsing = false;
 }

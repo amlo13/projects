@@ -1,6 +1,7 @@
 /*
+ * ForgeFun.com
  * Author: Calvin Leung (calvin@forgefun.com)
- * Date: 03/05/12
+ * Date: 03 May 12
  * Arduino Uno R3
  *
  * Code written for MSGEQ7 Spectrum Analyzer
